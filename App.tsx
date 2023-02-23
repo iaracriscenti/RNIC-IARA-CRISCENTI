@@ -1,126 +1,108 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+  AppState,
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
   Text,
-  useColorScheme,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import Card from './src/components/card';
+import {cards} from './src/constants/mocked-cards';
+import {styles} from './styles';
+import Header from './src/components/header';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = (): JSX.Element => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [data, setData] = useState(cards(15));
+  const [appState, setAppState] = useState('');
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  const emptyList = <Text style={styles.empty}>No hay tasks</Text>;
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const descriptionInputRef = useRef<TextInput>(null);
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  console.log('holisssss');
+  const isAndroid = Platform.OS === 'android';
 
   useEffect(() => {
-    fetch('https://pokeapi.co/api/v2/pokemon/ditto')
-      .then(raw => raw.json())
-      .then(data => console.log(data));
-  });
+    const handleAppStateChange = (nextAppState: string) => {
+      if (AppState.currentState === 'active') {
+        setData(cards(15));
+      }
+      setAppState(nextAppState);
+    };
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+    return () => {
+      subscription.remove();
+    };
+  }, [appState]);
+
+  const handleOnPress = () => {
+    setData([
+      ...data,
+      {title: title, description: description, isCompleted: false},
+    ]);
+    Keyboard.dismiss();
+  };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.mainSection}>
+      <View style={styles.list}>
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
+            <Card
+              title={item.title}
+              description={item.description}
+              isCompleted={item.isCompleted}
+            />
+          )}
+          ListHeaderComponent={Header('TASK LIST')}
+          ListEmptyComponent={emptyList}
+        />
+      </View>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <KeyboardAvoidingView>
+          <View style={styles.container}>
+            <TextInput
+              style={styles.input}
+              placeholder="Título"
+              placeholderTextColor={isAndroid ? '#230443' : '#ffffff'}
+              value={title}
+              onChangeText={setTitle}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                descriptionInputRef.current?.focus();
+              }}
+              blurOnSubmit={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Descripción"
+              placeholderTextColor={isAndroid ? '#230443' : '#ffffff'}
+              value={description}
+              onChangeText={setDescription}
+              ref={descriptionInputRef}
+              onSubmitEditing={() => {
+                Keyboard.dismiss();
+              }}
+            />
+            <TouchableOpacity style={styles.button} onPress={handleOnPress}>
+              <Text style={styles.buttonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
