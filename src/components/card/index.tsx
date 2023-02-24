@@ -1,17 +1,32 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import {styles} from './styles';
-import {CardProps} from './types';
+import {
+  CardContainer,
+  CardDescription,
+  CardTitle,
+  IconsContainer,
+} from './styles';
+import {CardProps} from '../../types/card-types';
+import {EditIcon, ToggleLeft, ToggleRight, TrashIcon} from '../../assets/icons';
+import {useTheme} from 'styled-components/native';
+import {Platform} from 'react-native';
 
 const Card = ({title, description, isCompleted}: CardProps): JSX.Element => {
+  const isAndroid = Platform.OS === 'android';
+  const theme = useTheme();
   return (
-    <View style={styles.cardContainer}>
-      <Text style={styles.cardTitle}>{title}</Text>
-      <Text style={styles.cardDescription}>{description}</Text>
-      <Text style={styles.cardStatus}>
-        {isCompleted ? 'Completado' : 'To-do'}
-      </Text>
-    </View>
+    <CardContainer isCompleted={isCompleted} isAndroid={isAndroid}>
+      <CardTitle isAndroid={isAndroid}>{title}</CardTitle>
+      <CardDescription isAndroid={isAndroid}>{description}</CardDescription>
+      <IconsContainer>
+        {isCompleted ? (
+          <ToggleRight color={theme.colors.primary} />
+        ) : (
+          <ToggleLeft color={theme.colors.primary} />
+        )}
+        <EditIcon color={theme.colors.primary} />
+        <TrashIcon color={theme.colors.primary} />
+      </IconsContainer>
+    </CardContainer>
   );
 };
 
