@@ -4,7 +4,6 @@ import {
   FlatList,
   Keyboard,
   KeyboardAvoidingView,
-  Platform,
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
@@ -31,8 +30,6 @@ const App = (): JSX.Element => {
   const [appState, setAppState] = useState('');
 
   const descriptionInputRef = useRef<TextInput>(null);
-
-  const isAndroid = Platform.OS === 'android';
 
   useEffect(() => {
     RNBootSplash.hide({fade: true});
@@ -83,11 +80,8 @@ const App = (): JSX.Element => {
           <KeyboardAvoidingView>
             <FormContainer>
               <MainInputs
-                isAndroid={isAndroid}
                 placeholder="Título"
-                placeholderTextColor={
-                  isAndroid ? myTheme?.colors.primary : myTheme?.colors.white
-                }
+                placeholderTextColor={myTheme.colors.primary}
                 value={title}
                 onChangeText={setTitle}
                 returnKeyType="next"
@@ -97,11 +91,8 @@ const App = (): JSX.Element => {
                 blurOnSubmit={false}
               />
               <MainInputs
-                isAndroid={isAndroid}
                 placeholder="Descripción"
-                placeholderTextColor={
-                  isAndroid ? myTheme?.colors.primary : myTheme?.colors.white
-                }
+                placeholderTextColor={myTheme.colors.primary}
                 value={description}
                 onChangeText={setDescription}
                 ref={descriptionInputRef}

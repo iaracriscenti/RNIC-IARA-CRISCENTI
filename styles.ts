@@ -15,12 +15,11 @@ export const FormContainer = styled.View`
   background-color: ${({theme}) => theme.colors.secondary};
 `;
 
-export const MainInputs = styled.TextInput<{isAndroid: boolean}>`
+export const MainInputs = styled.TextInput`
   width: 75%;
   border-radius: 15px;
   margin-bottom: 10px;
-  background-color: ${({isAndroid, theme}) =>
-    isAndroid ? theme.colors.white : theme.colors.primary};
+  background-color: ${({theme}) => theme.colors.white};
 `;
 
 export const MainButton = styled.TouchableOpacity`

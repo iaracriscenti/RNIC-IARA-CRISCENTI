@@ -8,15 +8,13 @@ import {
 import {CardProps} from '../../types/card-types';
 import {EditIcon, ToggleLeft, ToggleRight, TrashIcon} from '../../assets/icons';
 import {useTheme} from 'styled-components/native';
-import {Platform} from 'react-native';
 
 const Card = ({title, description, isCompleted}: CardProps): JSX.Element => {
-  const isAndroid = Platform.OS === 'android';
   const theme = useTheme();
   return (
-    <CardContainer isCompleted={isCompleted} isAndroid={isAndroid}>
-      <CardTitle isAndroid={isAndroid}>{title}</CardTitle>
-      <CardDescription isAndroid={isAndroid}>{description}</CardDescription>
+    <CardContainer isCompleted={isCompleted}>
+      <CardTitle>{title}</CardTitle>
+      <CardDescription>{description}</CardDescription>
       <IconsContainer>
         {isCompleted ? (
           <ToggleRight color={theme.colors.primary} />
