@@ -30,3 +30,8 @@ export const IconsContainer = styled.View`
   flex-direction: row;
   align-self: flex-end;
 `;
+
+export const ImageContainer = styled.Image`
+  width: 120px;
+  height: 120px;
+`;

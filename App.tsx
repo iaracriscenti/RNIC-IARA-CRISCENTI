@@ -52,11 +52,18 @@ const App = (): JSX.Element => {
   }, [appState]);
 
   const handleOnPress = () => {
-    setData([
-      ...data,
-      {title: title, description: description, isCompleted: false},
-    ]);
-    Keyboard.dismiss();
+    if (title !== '' && description !== '') {
+      setData([
+        ...data,
+        {
+          title: title,
+          description: description,
+          isCompleted: false,
+          index: 1,
+        },
+      ]);
+      Keyboard.dismiss();
+    }
   };
 
   return (
@@ -70,6 +77,7 @@ const App = (): JSX.Element => {
                 title={item.title}
                 description={item.description}
                 isCompleted={item.isCompleted}
+                index={item.index}
               />
             )}
             ListHeaderComponent={Header('TASK LIST')}
