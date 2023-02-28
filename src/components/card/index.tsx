@@ -4,19 +4,23 @@ import {
   CardDescription,
   CardTitle,
   IconsContainer,
+  ImageContainer,
 } from './styles';
 import {CardProps} from '../../types/card-types';
 import {EditIcon, ToggleLeft, ToggleRight, TrashIcon} from '../../assets/icons';
 import {useTheme} from 'styled-components/native';
-import {Platform} from 'react-native';
 
-const Card = ({title, description, isCompleted}: CardProps): JSX.Element => {
-  const isAndroid = Platform.OS === 'android';
+const Card = ({
+  title,
+  description,
+  isCompleted,
+  index,
+}: CardProps): JSX.Element => {
   const theme = useTheme();
   return (
-    <CardContainer isCompleted={isCompleted} isAndroid={isAndroid}>
-      <CardTitle isAndroid={isAndroid}>{title}</CardTitle>
-      <CardDescription isAndroid={isAndroid}>{description}</CardDescription>
+    <CardContainer isCompleted={isCompleted}>
+      <CardTitle>{title}</CardTitle>
+      <CardDescription>{description}</CardDescription>
       <IconsContainer>
         {isCompleted ? (
           <ToggleRight color={theme.colors.primary} />
@@ -26,6 +30,19 @@ const Card = ({title, description, isCompleted}: CardProps): JSX.Element => {
         <EditIcon color={theme.colors.primary} />
         <TrashIcon color={theme.colors.primary} />
       </IconsContainer>
+      {(index % 2 === 0 || index % 3 === 0 || index % 5 === 0) && (
+        <ImageContainer
+          source={
+            index % 5 === 0
+              ? require('../../assets/images/grogu-cookie.jpg')
+              : index % 3 === 0
+              ? require('../../assets/images/grogu-fernet.jpg')
+              : index % 2 === 0
+              ? require('../../assets/images/grogu-mandalorian.jpg')
+              : null
+          }
+        />
+      )}
     </CardContainer>
   );
 };
