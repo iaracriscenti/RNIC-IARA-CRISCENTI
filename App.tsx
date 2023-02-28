@@ -5,17 +5,24 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
-  Text,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
 } from 'react-native';
 import Card from './src/components/card';
 import {cards} from './src/constants/mocked-cards';
-import {styles} from './styles';
 import Header from './src/components/header';
+import RNBootSplash from 'react-native-bootsplash';
+import {CheckIcon} from './src/assets/icons';
+import {
+  FormContainer,
+  ListContainer,
+  MainButton,
+  MainInputs,
+  Wrapper,
+} from './styles';
+import EmptyList from './src/components/empty-text';
+import {ThemeProvider} from 'styled-components/native';
+import {myTheme} from './src/constants/theme';
 
 const App = (): JSX.Element => {
   const [title, setTitle] = useState('');
@@ -23,11 +30,13 @@ const App = (): JSX.Element => {
   const [data, setData] = useState(cards(15));
   const [appState, setAppState] = useState('');
 
-  const emptyList = <Text style={styles.empty}>No hay tasks</Text>;
-
   const descriptionInputRef = useRef<TextInput>(null);
 
   const isAndroid = Platform.OS === 'android';
+
+  useEffect(() => {
+    RNBootSplash.hide({fade: true});
+  }, []);
 
   useEffect(() => {
     const handleAppStateChange = (nextAppState: string) => {
@@ -54,54 +63,60 @@ const App = (): JSX.Element => {
   };
 
   return (
-    <SafeAreaView style={styles.mainSection}>
-      <View style={styles.list}>
-        <FlatList
-          data={data}
-          renderItem={({item}) => (
-            <Card
-              title={item.title}
-              description={item.description}
-              isCompleted={item.isCompleted}
-            />
-          )}
-          ListHeaderComponent={Header('TASK LIST')}
-          ListEmptyComponent={emptyList}
-        />
-      </View>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <KeyboardAvoidingView>
-          <View style={styles.container}>
-            <TextInput
-              style={styles.input}
-              placeholder="Título"
-              placeholderTextColor={isAndroid ? '#230443' : '#ffffff'}
-              value={title}
-              onChangeText={setTitle}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                descriptionInputRef.current?.focus();
-              }}
-              blurOnSubmit={false}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Descripción"
-              placeholderTextColor={isAndroid ? '#230443' : '#ffffff'}
-              value={description}
-              onChangeText={setDescription}
-              ref={descriptionInputRef}
-              onSubmitEditing={() => {
-                Keyboard.dismiss();
-              }}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleOnPress}>
-              <Text style={styles.buttonText}>+</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+    <ThemeProvider theme={myTheme}>
+      <Wrapper>
+        <ListContainer>
+          <FlatList
+            data={data}
+            renderItem={({item}) => (
+              <Card
+                title={item.title}
+                description={item.description}
+                isCompleted={item.isCompleted}
+              />
+            )}
+            ListHeaderComponent={Header('TASK LIST')}
+            ListEmptyComponent={EmptyList}
+          />
+        </ListContainer>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <KeyboardAvoidingView>
+            <FormContainer>
+              <MainInputs
+                isAndroid={isAndroid}
+                placeholder="Título"
+                placeholderTextColor={
+                  isAndroid ? myTheme?.colors.primary : myTheme?.colors.white
+                }
+                value={title}
+                onChangeText={setTitle}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  descriptionInputRef.current?.focus();
+                }}
+                blurOnSubmit={false}
+              />
+              <MainInputs
+                isAndroid={isAndroid}
+                placeholder="Descripción"
+                placeholderTextColor={
+                  isAndroid ? myTheme?.colors.primary : myTheme?.colors.white
+                }
+                value={description}
+                onChangeText={setDescription}
+                ref={descriptionInputRef}
+                onSubmitEditing={() => {
+                  Keyboard.dismiss();
+                }}
+              />
+              <MainButton onPress={handleOnPress}>
+                <CheckIcon color={myTheme?.colors.primary} />
+              </MainButton>
+            </FormContainer>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </Wrapper>
+    </ThemeProvider>
   );
 };
 

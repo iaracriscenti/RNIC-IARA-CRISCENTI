@@ -1,12 +1,11 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import {styles} from './styles';
+import {HeaderContainer, HeaderText} from './styles';
 
 const Header = (title: string) => {
   return (
-    <View>
-      <Text style={styles.header}>{title}</Text>
-    </View>
+    <HeaderContainer>
+      <HeaderText>{title}</HeaderText>
+    </HeaderContainer>
   );
 };
 

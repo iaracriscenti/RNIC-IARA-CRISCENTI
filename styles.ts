@@ -1,41 +1,31 @@
-import {Platform, StyleSheet} from 'react-native';
+import styled from 'styled-components/native';
 
-const isAndroid = Platform.OS === 'android';
+export const Wrapper = styled.SafeAreaView`
+  flex: 1;
+  background-color: ${({theme}) => theme.colors.light};
+`;
 
-export const styles = StyleSheet.create({
-  mainSection: {
-    backgroundColor: '#b695c0',
-    flex: 1,
-  },
-  list: {
-    flex: 3,
-  },
-  empty: {
-    marginTop: 30,
-    color: '#ffffff',
-    fontSize: 20,
-    alignSelf: 'center',
-  },
-  container: {
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: '#503459',
-  },
-  input: {
-    width: '75%',
-    borderRadius: 15,
-    marginBottom: 10,
-    backgroundColor: isAndroid ? '#ffffff' : '#230443',
-  },
-  button: {
-    height: 30,
-    borderRadius: 15,
-    width: '20%',
-    alignItems: 'center',
-    backgroundColor: '#dac9df',
-  },
-  buttonText: {
-    color: '#230443',
-    fontSize: 20,
-  },
-});
+export const ListContainer = styled.View`
+  flex: 3;
+`;
+
+export const FormContainer = styled.View`
+  align-items: center;
+  padding: 15px;
+  background-color: ${({theme}) => theme.colors.secondary};
+`;
+
+export const MainInputs = styled.TextInput<{isAndroid: boolean}>`
+  width: 75%;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  background-color: ${({isAndroid, theme}) =>
+    isAndroid ? theme.colors.white : theme.colors.primary};
+`;
+
+export const MainButton = styled.TouchableOpacity`
+  border-radius: 15px;
+  padding: 8px;
+  align-items: center;
+  background-color: ${({theme}) => theme.colors.light};
+`;
